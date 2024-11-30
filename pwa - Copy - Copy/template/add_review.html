@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styleS1.css') }}">
+</head>
+<body>
+    <h1>Add Your Review</h1>
+
+    <nav class="navbar">
+        <div class="container">
+
+            
+            <ul class="nav-links">
+                <li><a href="{{ url_for('get_reviews') }}">All Reviews</a></li>
+           <li> <a href="{{ url_for('index') }}" >Home</a></li>
+              
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+           
+
+
+
+            </ul>
+        </div>
+    </nav>
+
+
+    <form method="POST">
+<br><br>
+        <!-- Dropdown for Inbuilt Movie Titles -->
+        <label for="movie_title">Select or Enter Movie Title: </label>
+        <select id="movie_title" name="movie_title">
+            <option value="">Select a Movie</option>
+            {% for title in movie_titles %}
+                <option value="{{ title }}" {% if selected_movie == title %} selected {% endif %}>
+                    {{ title }}
+                </option>
+            {% endfor %}
+        </select><br><br>
+
+        <!-- Textbox for User-defined Movie Title -->
+        <label for="movie_title_input">OR <br><br>Enter New Movie Title: </label>
+        <input type="text" id="movie_title_input" name="movie_title_input" value="{{ selected_movie }}"><br><br>
+
+        <!-- Review Field -->
+        <label for="review">Review: </label><br>
+        <textarea id="review" name="review" rows="4" required></textarea><br><br>
+
+        <!-- Rating Field -->
+        <label for="rating">Rating (1-5): </label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required><br><br>
+
+        <!-- Submit Button -->
+        <button type="submit">Submit Review</button>
+    </form>
+</body>
+</html>
