@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles3.css') }}">
+</head>
+<body>
+    <h1>Add Review</h1>
+
+    <!-- Flash Message -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+   <form method="POST">
+    <label for="category">Select Category:</label>
+    <select id="category" name="category">
+        <option value="movie">Movie</option>
+        <option value="game">Game</option>
+    </select>
+    <br><br>
+
+    <!-- Movie Section -->
+    <div id="movie-section">
+        <label for="movie-title">Select Movie Title:</label>
+        <select id="movie-dropdown" name="title">
+            <option value="">Select a movie title</option>
+            {% for movie in movie_titles %}
+                <option value="{{ movie }}">{{ movie }}</option>
+            {% endfor %}
+            <option value="other">Other (manual entry)</option>
+        </select>
+        <input type="text" id="movie-input" name="custom_movie_title" placeholder="Enter custom movie title" disabled>
+    </div>
+
+    <!-- Game Section -->
+    <div id="game-section" style="display:none;">
+        <label for="game-title">Select Game Title:</label>
+        <select id="game-dropdown" name="title">
+            <option value="">Select a game title</option>
+            {% for game in game_titles %}
+                <option value="{{ game }}">{{ game }}</option>
+            {% endfor %}
+            <option value="other">Other (manual entry)</option>
+        </select>
+        <input type="text" id="game-input" name="custom_game_title" placeholder="Enter custom game title" disabled>
+    </div>
+
+    <!-- Review Section -->
+    <label for="review">Review:</label>
+    <textarea id="review" name="review" required></textarea>
+    <br><br>
+
+    <label for="rating">Rating (1-5):</label>
+    <input type="number" id="rating" name="rating" min="1" max="5" required>
+    <br><br>
+
+    <button type="submit">Submit Review</button>
+</form>
+
+
+   <script>
+    // Toggle sections based on selected category (Movie or Game)
+    $('#category').change(function() {
+        var selectedCategory = $(this).val();
+        
+        if (selectedCategory === 'movie') {
+            $('#movie-section').show();
+            $('#game-section').hide();
+        } else if (selectedCategory === 'game') {
+            $('#movie-section').hide();
+            $('#game-section').show();
+        }
+    });
+
+    // Enable/Disable manual game title input based on dropdown selection
+    $('#game-dropdown').change(function() {
+        var selectedGame = $(this).val();
+        if (selectedGame === 'other') {
+            $('#game-input').prop('disabled', false);
+        } else {
+            $('#game-input').prop('disabled', true).val('');  // Clear the input
+        }
+    });
+
+    // Enable/Disable manual movie title input based on dropdown selection
+    $('#movie-dropdown').change(function() {
+        var selectedMovie = $(this).val();
+        if (selectedMovie === 'other') {
+            $('#movie-input').prop('disabled', false);
+        } else {
+            $('#movie-input').prop('disabled', true).val('');  // Clear the input
+        }
+    });
+
+    // Ensure that custom inputs are enabled for submission
+    $('form').on('submit', function() {
+        if ($('#game-dropdown').val() === 'other') {
+            $('#game-input').prop('disabled', false);
+        }
+        if ($('#movie-dropdown').val() === 'other') {
+            $('#movie-input').prop('disabled', false);
+        }
+    });
+</script>
+</body>
+</html>

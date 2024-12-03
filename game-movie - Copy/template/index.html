@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+
+    <title>Movie Reviews</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+</head>
+<body>
+    
+{% extends "movie1.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<p>Explore and share your thoughts about movies.</p>
+{% endblock %}
+    
+</body>
+</html>

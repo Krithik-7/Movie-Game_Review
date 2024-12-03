@@ -1,0 +1,82 @@
+/* Global Styles */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: url('{{ url_for('static', filename='images/background.jpg') }}') no-repeat center center fixed;
+    background-size: cover; /* Ensure background covers entire screen */
+    color: #fff; /* White text for better contrast on background */
+    padding-top: 50px;
+    margin: 0;
+}
+
+/* Heading and Paragraph Styles */
+h2.main-title {
+    font-size: 3rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* Add shadow for better readability */
+}
+
+p.lead {
+    font-size: 1.2rem;
+    color: #ddd;
+    margin-bottom: 40px;
+}
+
+/* Button Group Styles */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+/* Common Button Styles */
+.btn {
+    padding: 20px 40px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 25px;  /* Round corners */
+    text-transform: uppercase;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Movie Review Button */
+.btn-movie {
+    background: linear-gradient(145deg, #ff7f50, #ff4500); /* Gradient effect */
+    color: white;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-movie:hover {
+    background: linear-gradient(145deg, #ff4500, #ff7f50); /* Reverse gradient on hover */
+    transform: translateY(-5px); /* Hover lift effect */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Game Review Button */
+.btn-game {
+    background: linear-gradient(145deg, #4682b4, #5a9bd5); /* Gradient effect */
+    color: white;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-game:hover {
+    background: linear-gradient(145deg, #5a9bd5, #4682b4); /* Reverse gradient on hover */
+    transform: translateY(-5px); /* Hover lift effect */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer */
+footer {
+    background-color: rgba(0, 0, 0, 0.8); /* Transparent black footer */
+    color: white;
+    padding: 20px 0;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Add shadow for footer text */
+}
