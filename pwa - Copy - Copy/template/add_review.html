@@ -4,56 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Review</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styleS1.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles3.css') }}">
 </head>
 <body>
-    <h1>Add Your Review</h1>
+    <h1>Add Review</h1>
 
-    <nav class="navbar">
-        <div class="container">
-
-            
-            <ul class="nav-links">
-                <li><a href="{{ url_for('get_reviews') }}">All Reviews</a></li>
-           <li> <a href="{{ url_for('index') }}" >Home</a></li>
-              
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
-           
-
-
-
+    <!-- Flash Message -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
             </ul>
-        </div>
-    </nav>
-
+        {% endif %}
+    {% endwith %}
 
     <form method="POST">
-<br><br>
-        <!-- Dropdown for Inbuilt Movie Titles -->
-        <label for="movie_title">Select or Enter Movie Title: </label>
-        <select id="movie_title" name="movie_title">
-            <option value="">Select a Movie</option>
-            {% for title in movie_titles %}
-                <option value="{{ title }}" {% if selected_movie == title %} selected {% endif %}>
-                    {{ title }}
-                </option>
+    <label for="category">Select Category:</label>
+    <select id="category" name="category" required>
+        <option value="" disabled selected>Select category</option>
+        <option value="movie">Movie</option>
+        <option value="game">Game</option>
+    </select>
+    <br><br>
+
+    <!-- Movie Section -->
+    <div id="movie-section" style="display:none;">
+        <label for="movie-title">Select Movie Title:</label>
+        <select id="movie-dropdown" name="movie_title">
+            <option value="" disabled selected>Select a movie title</option>
+            {% for movie in movie_titles %}
+                <option value="{{ movie }}">{{ movie }}</option>
             {% endfor %}
-        </select><br><br>
+            <option value="other">Other (manual entry)</option>
+        </select>
+        <input type="text" id="movie-input" name="custom_movie_title" placeholder="Enter custom movie title" disabled>
+    </div>
 
-        <!-- Textbox for User-defined Movie Title -->
-        <label for="movie_title_input">OR <br><br>Enter New Movie Title: </label>
-        <input type="text" id="movie_title_input" name="movie_title_input" value="{{ selected_movie }}"><br><br>
+    <!-- Game Section -->
+    <div id="game-section" style="display:none;">
+        <label for="game-title">Select Game Title:</label>
+        <select id="game-dropdown" name="game_title">
+            <option value="" disabled selected>Select a game title</option>
+            {% for game in game_titles %}
+                <option value="{{ game }}">{{ game }}</option>
+            {% endfor %}
+            <option value="other">Other (manual entry)</option>
+        </select>
+        <input type="text" id="game-input" name="custom_game_title" placeholder="Enter custom game title" disabled>
+    </div>
 
-        <!-- Review Field -->
-        <label for="review">Review: </label><br>
-        <textarea id="review" name="review" rows="4" required></textarea><br><br>
+    <!-- Review Section -->
+    <label for="review">Reviews movie :</label>
+    <textarea id="review" name="review" required></textarea>
+    <br><br>
 
-        <!-- Rating Field -->
-        <label for="rating">Rating (1-5): </label>
-        <input type="number" id="rating" name="rating" min="1" max="5" required><br><br>
+    <label for="rating">Rating (1-5):</label>
+    <input type="number" id="rating" name="rating" min="1" max="5" required>
+    <br><br>
 
-        <!-- Submit Button -->
-        <button type="submit">Submit Review</button>
-    </form>
+    <button type="submit">Submit Review</button>
+</form>
+
+
+    <script>
+       // Toggle between movie and game sections based on category
+$('#category').change(function() {
+    var selectedCategory = $(this).val();
+
+    if (selectedCategory === 'movie') {
+        $('#movie-section').show();
+        $('#game-section').hide();
+        $('#movie-input').prop('disabled', true).val(''); // Reset movie input
+        $('#game-input').prop('disabled', true).val(''); // Disable game input
+    } else if (selectedCategory === 'game') {
+        $('#movie-section').hide();
+        $('#game-section').show();
+        $('#movie-input').prop('disabled', true).val(''); // Disable movie input
+        $('#game-input').prop('disabled', true).val(''); // Reset game input
+    }
+});
+
+// Enable custom movie input if "Other" is selected
+$('#movie-dropdown').change(function() {
+    var selectedMovie = $(this).val();
+    if (selectedMovie === 'other') {
+        $('#movie-input').prop('disabled', false);
+    } else {
+        $('#movie-input').prop('disabled', true).val(''); // Clear input if not "Other"
+    }
+});
+
+// Enable custom game input if "Other" is selected
+$('#game-dropdown').change(function() {
+    var selectedGame = $(this).val();
+    if (selectedGame === 'other') {
+        $('#game-input').prop('disabled', false);
+    } else {
+        $('#game-input').prop('disabled', true).val(''); // Clear input if not "Other"
+    }
+});
+
+// Ensure all custom inputs are enabled before submission
+$('form').on('submit', function() {
+    if ($('#movie-dropdown').val() === 'other') {
+        $('#movie-input').prop('disabled', false);
+    }
+    if ($('#game-dropdown').val() === 'other') {
+        $('#game-input').prop('disabled', false);
+    }
+});
+</script>
+<a href="{{ url_for('index') }}" style="display: inline-block; padding: 10px 20px; margin: 10px 0; font-size: 16px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 5px; border: none; text-align: center; cursor: pointer;">
+    Mainpage
+</a>
 </body>
 </html>
