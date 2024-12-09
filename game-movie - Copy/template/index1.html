@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Movie & Game Reviews</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles3.css') }}">
-
+<script src="/static/js/main.js"></script>
 </head>
 <body>
   <!-- Header -->
@@ -49,7 +49,7 @@
 
 
 
-        <h3>Movie Title</h3>
+        <h3>GLADIATOR</h3>
         <p>Average Rating: ★★★★☆</p>
         <button>Read More</button>
       </div>
@@ -57,7 +57,7 @@
      <img src="{{ url_for('static', filename='images/m3.jpeg') }}" alt="MovieReviews Logo" class="logo">
 
 
-        <h3>Game Title</h3>
+        <h3>SCARY MOVIE</h3>
         <p>Average Rating: ★★★★☆</p>
         <button>Read More</button>
       </div>
@@ -65,7 +65,7 @@
      <img src="{{ url_for('static', filename='images/m1.jpeg') }}" alt="MovieReviews Logo" class="logo">
 
 
-        <h3>Game Title</h3>
+        <h3>DISNIP ENCANTO</h3>
         <p>Average Rating: ★★★★☆</p>
         <button>Read More</button>
       </div>
@@ -73,7 +73,7 @@
      <img src="{{ url_for('static', filename='images/m4.jpeg') }}" alt="MovieReviews Logo" class="logo">
 
 
-        <h3>Game Title</h3>
+        <h3>RED ONE</h3>
         <p>Average Rating: ★★★★☆</p>
         <button>Read More</button>
       </div>
@@ -101,5 +101,16 @@
       <a href="#">Instagram</a>
     </div>
   </footer>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
+        });
+    }
+</script>
 </body>
 </html>
