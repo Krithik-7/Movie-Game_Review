@@ -11,15 +11,16 @@ import bleach
 import os
 import mimetypes
 from flask import Flask, jsonify, request
+from flask_migrate import Migrate
 
 from flask import render_template, request, redirect, url_for
 
 
 
-app = app = Flask(__name__, static_folder='static', template_folder='template')
 
 
 
+app = Flask(__name__, static_folder='static', template_folder='template')
 
 
 
@@ -53,7 +54,7 @@ class User(db.Model, UserMixin):
 
 class MovieReview(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    movie_title = db.Column(db.String(100), nullable=False)
+    movie_title = db.Column(db.String(255), nullable=False)
     review = db.Column(db.Text, nullable=False)
     reviewer_name = db.Column(db.String(50), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
@@ -61,12 +62,12 @@ class MovieReview(db.Model):
    
 class GameReview(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    game_title = db.Column(db.String(100), nullable=False)
+    game_title = db.Column(db.String(255), nullable=False)
     review = db.Column(db.Text, nullable=False)
     reviewer_name = db.Column(db.String(50), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
@@ -134,7 +135,8 @@ def login():
 def get_reviews():
     category = request.args.get('category')  # Get the selected category (movie/game)
     item_title = request.args.get('item_title')  # Get the selected item (movie title/game title)
-
+    rating = request.args.get('rating')  # Get the selected rating
+    
     # Fetch distinct movie or game titles based on the category
     if category == 'movie':
         movie_titles = [movie.movie_title for movie in MovieReview.query.distinct(MovieReview.movie_title).all()]
@@ -142,9 +144,15 @@ def get_reviews():
         
         # Fetch reviews for the selected movie or all movies if no title is selected
         if item_title == "":
-            reviews = MovieReview.query.all()
+            reviews = MovieReview.query
         else:
-            reviews = MovieReview.query.filter_by(movie_title=item_title).all()
+            reviews = MovieReview.query.filter_by(movie_title=item_title)
+        
+        # Filter by rating if specified
+        if rating:
+            reviews = reviews.filter(MovieReview.rating == int(rating))
+        
+        reviews = reviews.all()
 
     elif category == 'game':
         game_titles = [game.game_title for game in GameReview.query.distinct(GameReview.game_title).all()]
@@ -152,9 +160,15 @@ def get_reviews():
         
         # Fetch reviews for the selected game or all games if no title is selected
         if item_title == "":
-            reviews = GameReview.query.all()
+            reviews = GameReview.query
         else:
-            reviews = GameReview.query.filter_by(game_title=item_title).all()
+            reviews = GameReview.query.filter_by(game_title=item_title)
+        
+        # Filter by rating if specified
+        if rating:
+            reviews = reviews.filter(GameReview.rating == int(rating))
+        
+        reviews = reviews.all()
 
     else:
         movie_titles = []
@@ -166,82 +180,95 @@ def get_reviews():
                            game_titles=game_titles, 
                            reviews=reviews, 
                            category=category,
-                           selected_item=item_title)
+                           selected_item=item_title, 
+                           rating=rating)
 
 @app.route('/add_review', methods=['GET', 'POST'])
 @login_required
 def add_review():
     if request.method == 'POST':
-        category = request.form.get('category')  # 'movie' or 'game'
-        title = request.form.get('title')  # Title from the dropdown or text input
-        review = request.form['review']
-        rating = int(request.form['rating'])
+        # Get common inputs
+        category = request.form.get('category')
+        review = request.form.get('review', '').strip()
+        rating = request.form.get('rating')
 
-        # Debugging: Print form data to see what is being passed
-        print(f"Category: {category}, Title: {title}, Review: {review}, Rating: {rating}")
+        # Validate review and rating
+        if not review or not rating:
+            flash('All fields are required.', 'danger')
+            return redirect(url_for('add_review'))
 
-        # Check for duplicate review by the same user
+        try:
+            rating = int(rating)
+            if not 1 <= rating <= 5:
+                flash('Rating must be between 1 and 5.', 'danger')
+                return redirect(url_for('add_review'))
+        except ValueError:
+            flash('Invalid rating value.', 'danger')
+            return redirect(url_for('add_review'))
+
+        # Handle category-specific logic
         if category == 'movie':
-            # If the title is 'other', use the custom movie title
-            if title == "other":
-                title = request.form.get('custom_movie_title')  # Get the custom movie title from input field
-                if not title:
-                    flash('Please provide a custom movie title.', 'danger')
-                    return redirect(url_for('add_review'))
+            movie_title = request.form.get('movie_title')
+            custom_movie_title = request.form.get('custom_movie_title', '').strip()
+            title = custom_movie_title if movie_title == 'other' else movie_title
 
-            # Check if the user already reviewed this movie
-            existing_review = MovieReview.query.filter_by(movie_title=title, reviewer_name=current_user.username).first()
-            if existing_review:
+            if not title:
+                flash('Movie title is required.', 'danger')
+                return redirect(url_for('add_review'))
+
+            # Check for duplicate movie review by the same user
+            existing_movie_review = MovieReview.query.filter_by(
+                movie_title=title, reviewer_name=current_user.username).first()
+            if existing_movie_review:
                 flash('You have already reviewed this movie.', 'danger')
                 return redirect(url_for('add_review'))
 
-            # Add movie review
-            sanitized_review = bleach.clean(review, tags=['b', 'i', 'u', 'em', 'strong', 'a'])
             new_review = MovieReview(
                 movie_title=title,
-                review=sanitized_review,
+                review=bleach.clean(review),
                 reviewer_name=current_user.username,
                 rating=rating
             )
-            db.session.add(new_review)
-            db.session.commit()
-            flash('Movie review added successfully!', 'success')
-
         elif category == 'game':
-            # If the title is 'other', use the custom game title
-            if title == "other":
-                title = request.form.get('custom_game_title')  # Get the custom game title from input field
-                if not title:
-                    flash('Please provide a custom game title.', 'danger')
-                    return redirect(url_for('add_review'))
+            game_title = request.form.get('game_title')
+            custom_game_title = request.form.get('custom_game_title', '').strip()
+            title = custom_game_title if game_title == 'other' else game_title
 
-            # Check if the user already reviewed this game
-            existing_review = GameReview.query.filter_by(game_title=title, reviewer_name=current_user.username).first()
-            if existing_review:
+            if not title:
+                flash('Game title is required.', 'danger')
+                return redirect(url_for('add_review'))
+
+            # Check for duplicate game review by the same user
+            existing_game_review = GameReview.query.filter_by(
+                game_title=title, reviewer_name=current_user.username).first()
+            if existing_game_review:
                 flash('You have already reviewed this game.', 'danger')
                 return redirect(url_for('add_review'))
 
-            # Add game review
-            sanitized_review = bleach.clean(review, tags=['b', 'i', 'u', 'em', 'strong', 'a'])
             new_review = GameReview(
                 game_title=title,
-                review=sanitized_review,
+                review=bleach.clean(review),
                 reviewer_name=current_user.username,
                 rating=rating
             )
-            db.session.add(new_review)
-            db.session.commit()
-            flash('Game review added successfully!', 'success')
+        else:
+            flash('Invalid category.', 'danger')
+            return redirect(url_for('add_review'))
 
-        return redirect(url_for('index'))  # Redirect to the home page or wherever you like
+        # Save to database
+        db.session.add(new_review)
+        db.session.commit()
+        flash(f'{category.capitalize()} review added successfully!', 'success')
+        return redirect(url_for('get_reviews'))
 
-    # Get distinct movie and game titles from the database
+    # Pass existing titles to the template
     movie_titles = [movie.movie_title for movie in MovieReview.query.distinct(MovieReview.movie_title).all()]
     game_titles = [game.game_title for game in GameReview.query.distinct(GameReview.game_title).all()]
-
-    # Render the form and pass the titles
     return render_template('add_review.html', movie_titles=movie_titles, game_titles=game_titles)
-@app.route('/edit_review/<int:review_id>', methods=['POST'])
+	
+
+
+@app.route('/edit_review/<int:review_id>', methods=['GET', 'POST'])
 def edit_review(review_id):
     review = MovieReview.query.get_or_404(review_id)  # Fetch the review by ID
 
@@ -319,15 +346,22 @@ def get_games():
     game_titles = [title[0] for title in game_titles]  # Convert tuple to list
     return jsonify({'games': game_titles})
 
+@app.route('/service-worker.js')
+def service_worker():
+    return send_from_directory(app.static_folder, 'service-worker.js')
 
+@app.route('/static/offline.html')
+def offline():
+    return send_from_directory(app.static_folder, 'offline.html')
 @app.route('/logout')
-@login_required
+@app.route('/logout')
 def logout():
-    logout_user()
-    flash('Logged out successfully.', 'info')
-    return redirect(url_for('login'))
+    # Perform logout logic, e.g., clear session or call logout_user()
+    session.clear()  # Clear all session data (or use logout_user() for Flask-Login)
+    flash("You have been logged out successfully.", 'info')
+    return redirect(url_for('index'))  # Redirect to the home page
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
