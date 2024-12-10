@@ -50,6 +50,17 @@
                 {% endif %}
             </select>
 
+            <!-- Rating Dropdown -->
+            <label for="rating">Select Rating:</label>
+            <select id="rating" name="rating">
+                <option value="">--Select--</option>
+                <option value="1" {% if rating == '1' %}selected{% endif %}>1</option>
+                <option value="2" {% if rating == '2' %}selected{% endif %}>2</option>
+                <option value="3" {% if rating == '3' %}selected{% endif %}>3</option>
+                <option value="4" {% if rating == '4' %}selected{% endif %}>4</option>
+                <option value="5" {% if rating == '5' %}selected{% endif %}>5</option>
+            </select>
+
             <button type="submit">VIEW Review</button>
         </form>
     </header>
@@ -100,14 +111,10 @@
             const category = this.value;
             const movieDropdown = document.getElementById('item_title');
             
-            if (category === 'movie') {
+            if (category === 'movie' || category === 'game') {
                 movieDropdown.disabled = false;
-                // Trigger a reload to update movie titles
-                window.location.href = "{{ url_for('get_reviews') }}?category=movie";
-            } else if (category === 'game') {
-                movieDropdown.disabled = false;
-                // Trigger a reload to update game titles
-                window.location.href = "{{ url_for('get_reviews') }}?category=game";
+                // Reload the page to update movie/game titles
+                window.location.href = "{{ url_for('get_reviews') }}?category=" + category;
             } else {
                 movieDropdown.disabled = true;
             }
