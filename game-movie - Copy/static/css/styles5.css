@@ -1,0 +1,152 @@
+/* General Reset and Box-Sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensures padding and borders are included in element width */
+}
+
+/* Body Styling */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(to right, #ff7e5f, #feb47b); /* Gradient background */
+    color: #fff;
+    line-height: 1.6;
+}
+
+/* Container Styling */
+.container {
+    max-width: 700px; /* Smaller width */
+    margin: 30px auto; /* Centered container with space around */
+    padding: 20px; /* Inner padding */
+    background: #ffffff;
+    border-radius: 10px; /* Rounded corners */
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow */
+}
+
+/* Header Styling */
+h1, h2 {
+    text-align: center;
+    color: #444; /* Darker color for headers */
+    margin-bottom: 20px;
+}
+
+/* Button Styling */
+.button {
+    display: inline-block;
+    padding: 12px 25px;
+    margin-top: 20px;
+    background: #ff7e5f;
+    color: #fff;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.button:hover {
+    background: #feb47b;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25); /* Hover effect */
+}
+
+/* Form Element Styling */
+form input, form textarea, form select, form button {
+    width: 100%; /* Ensures form elements don't overflow */
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    background: #f3f3f3;
+}
+
+form input, form select {
+    color: #333;
+}
+
+form textarea {
+    color: #333;
+    resize: vertical; /* Vertical resize only */
+}
+
+form button {
+    background: #ff7e5f;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    transition: background 0.3s ease;
+    cursor: pointer;
+}
+
+form button:hover {
+    background: #feb47b; /* Button hover effect */
+}
+
+/* Grid Layout for Team and Contact Details */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Flexible grid */
+    gap: 20px;
+}
+
+/* Card Style for Team/Contact Info */
+.card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+/* Icon Styling */
+.icon {
+    font-size: 50px;
+    color: #ff7e5f;
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr; /* Single column layout on small screens */
+    }
+
+    .container {
+        padding: 15px; /* Adjust padding for small screens */
+    }
+
+    h1, h2 {
+        font-size: 24px; /* Adjust header size on small screens */
+    }
+
+    .button {
+        width: 100%; /* Full-width button on small screens */
+    }
+}
+
+/* General Text Styling */
+ul {
+    list-style-type: none; /* Removes default list styling */
+    padding-left: 20px;
+}
+
+li {
+    margin: 10px 0;
+}
+
+/* Links */
+a {
+    text-decoration: none;
+    color: #ff7e5f;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #feb47b; /* Hover color for links */
+}
