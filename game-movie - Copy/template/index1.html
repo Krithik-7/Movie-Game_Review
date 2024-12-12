@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Movie & Game Reviews</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles3.css') }}">
-<script src="/static/js/main.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
 <body>
   <!-- Header -->
+
   <header>
     <div class="logo">ReviewHub</div>
     <nav>
@@ -22,6 +23,11 @@
         <a href="{{ url_for('login') }}">Login</a>
         <a href="{{ url_for('register') }}">Register</a>
 <a href="{{ url_for('get_reviews') }}">View Reviews</a>
+<a href="{{ url_for('about') }}">About</a>
+<a href="{{ url_for('contact') }}">Contact Us</a>
+
+
+
 
       {% endif %}
     </nav>
@@ -44,30 +50,29 @@
   <section class="featured-reviews">
     <h2>Featured Reviews</h2>
     <div class="grid">
-      <div class="card">
-         <img src="{{ url_for('static', filename='images/m2.jpeg') }}" alt="MovieReviews Logo" class="logo">
+    <div class="card">
+    <img src="{{ url_for('static', filename='images/m2.jpeg') }}" alt="Gladiator" class="logo">
+    <h3>GLADIATOR</h3>
 
-
-
-        <h3>GLADIATOR</h3>
         <p>Average Rating: ★★★★☆</p>
-        <button>Read More</button>
+      
       </div>
+
       <div class="card">
      <img src="{{ url_for('static', filename='images/m3.jpeg') }}" alt="MovieReviews Logo" class="logo">
 
 
         <h3>SCARY MOVIE</h3>
         <p>Average Rating: ★★★★☆</p>
-        <button>Read More</button>
+       
       </div>
       <div class="card">
      <img src="{{ url_for('static', filename='images/m1.jpeg') }}" alt="MovieReviews Logo" class="logo">
 
 
-        <h3>DISNIP ENCANTO</h3>
+        <h3>DISNEY ENCANTO</h3>
         <p>Average Rating: ★★★★☆</p>
-        <button>Read More</button>
+       
       </div>
           <div class="card">
      <img src="{{ url_for('static', filename='images/m4.jpeg') }}" alt="MovieReviews Logo" class="logo">
@@ -75,8 +80,17 @@
 
         <h3>RED ONE</h3>
         <p>Average Rating: ★★★★☆</p>
-        <button>Read More</button>
+      
       </div>
+<div class="card">
+     <img src="{{ url_for('static', filename='images/m6.jpeg') }}" alt="MovieReviews Logo" class="logo">
+
+
+        <h3>BLAKAN LINE</h3>
+        <p>Average Rating: ★★★★☆</p>
+       
+      </div>
+
     
     </div>
   </section>
@@ -89,6 +103,7 @@
  title="Movie Trailer" frameborder="0" allowfullscreen></iframe>
        <iframe src="https://www.youtube.com/embed/6jBIGjWgAzA"
         title="Game Trailer" frameborder="0" allowfullscreen></iframe>
+
 </div>
   </section>
 
@@ -112,5 +127,7 @@
         });
     }
 </script>
+
+
 </body>
 </html>
