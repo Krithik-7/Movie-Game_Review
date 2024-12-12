@@ -12,7 +12,7 @@ import os
 import mimetypes
 from flask import Flask, jsonify, request
 from flask_migrate import Migrate
-
+import mimetypes
 from flask import render_template, request, redirect, url_for
 
 
@@ -360,6 +360,45 @@ def logout():
     session.clear()  # Clear all session data (or use logout_user() for Flask-Login)
     flash("You have been logged out successfully.", 'info')
     return redirect(url_for('index'))  # Redirect to the home page
+
+
+@app.route('/about')
+def about():
+    about_info = {
+        "app_name": "ReviewHub",
+        "version": "1.0",
+        "description": "ReviewHub is your one-stop destination for honest and detailed reviews of movies and games. Dive into user ratings, editorials, and trending content to discover your next favorite title.",
+        "team": [
+            {"name": "Krithik", "role": "Backend Developer"},
+            {"name": "Krithik", "role": "Frontend Developer"},
+            {"name": "Krithik", "role": "Content Writer"},
+	    {"name": "Krithik", "role": "Tester"}
+
+        ],
+        "goals": [
+            "Provide authentic reviews for movies and games.",
+            "Foster a community of passionate reviewers.",
+            "Highlight trending and hidden gems in entertainment."
+        ]
+    }
+    return render_template('about.html', info=about_info)
+
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        # Capture form data (optional processing, like sending an email or saving data)
+        name = request.form['name']
+        email = request.form['email']
+        subject = request.form['subject']
+        message = request.form['message']
+        
+        # You can save or send an email with the form data here
+        # For now, we'll just render a thank you message
+
+        return render_template('contact.html', thank_you=True)  # Display the thank you message
+    
+    return render_template('contact.html', thank_you=False)  # Show form if not submitted
 
 if __name__ == '__main__':
     with app.app_context():
