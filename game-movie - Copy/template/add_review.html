@@ -21,19 +21,20 @@
         {% endif %}
     {% endwith %}
 
-   <form method="POST">
+    <form method="POST">
     <label for="category">Select Category:</label>
-    <select id="category" name="category">
+    <select id="category" name="category" required>
+        <option value="" disabled selected>Select category</option>
         <option value="movie">Movie</option>
         <option value="game">Game</option>
     </select>
     <br><br>
 
     <!-- Movie Section -->
-    <div id="movie-section">
+    <div id="movie-section" style="display:none;">
         <label for="movie-title">Select Movie Title:</label>
-        <select id="movie-dropdown" name="title">
-            <option value="">Select a movie title</option>
+        <select id="movie-dropdown" name="movie_title">
+            <option value="" disabled selected>Select a movie title</option>
             {% for movie in movie_titles %}
                 <option value="{{ movie }}">{{ movie }}</option>
             {% endfor %}
@@ -45,8 +46,8 @@
     <!-- Game Section -->
     <div id="game-section" style="display:none;">
         <label for="game-title">Select Game Title:</label>
-        <select id="game-dropdown" name="title">
-            <option value="">Select a game title</option>
+        <select id="game-dropdown" name="game_title">
+            <option value="" disabled selected>Select a game title</option>
             {% for game in game_titles %}
                 <option value="{{ game }}">{{ game }}</option>
             {% endfor %}
@@ -56,7 +57,7 @@
     </div>
 
     <!-- Review Section -->
-    <label for="review">Review:</label>
+    <label for="review">Reviews movie :</label>
     <textarea id="review" name="review" required></textarea>
     <br><br>
 
@@ -68,49 +69,56 @@
 </form>
 
 
-   <script>
-    // Toggle sections based on selected category (Movie or Game)
-    $('#category').change(function() {
-        var selectedCategory = $(this).val();
-        
-        if (selectedCategory === 'movie') {
-            $('#movie-section').show();
-            $('#game-section').hide();
-        } else if (selectedCategory === 'game') {
-            $('#movie-section').hide();
-            $('#game-section').show();
-        }
-    });
+    <script>
+       // Toggle between movie and game sections based on category
+$('#category').change(function() {
+    var selectedCategory = $(this).val();
 
-    // Enable/Disable manual game title input based on dropdown selection
-    $('#game-dropdown').change(function() {
-        var selectedGame = $(this).val();
-        if (selectedGame === 'other') {
-            $('#game-input').prop('disabled', false);
-        } else {
-            $('#game-input').prop('disabled', true).val('');  // Clear the input
-        }
-    });
+    if (selectedCategory === 'movie') {
+        $('#movie-section').show();
+        $('#game-section').hide();
+        $('#movie-input').prop('disabled', true).val(''); // Reset movie input
+        $('#game-input').prop('disabled', true).val(''); // Disable game input
+    } else if (selectedCategory === 'game') {
+        $('#movie-section').hide();
+        $('#game-section').show();
+        $('#movie-input').prop('disabled', true).val(''); // Disable movie input
+        $('#game-input').prop('disabled', true).val(''); // Reset game input
+    }
+});
 
-    // Enable/Disable manual movie title input based on dropdown selection
-    $('#movie-dropdown').change(function() {
-        var selectedMovie = $(this).val();
-        if (selectedMovie === 'other') {
-            $('#movie-input').prop('disabled', false);
-        } else {
-            $('#movie-input').prop('disabled', true).val('');  // Clear the input
-        }
-    });
+// Enable custom movie input if "Other" is selected
+$('#movie-dropdown').change(function() {
+    var selectedMovie = $(this).val();
+    if (selectedMovie === 'other') {
+        $('#movie-input').prop('disabled', false);
+    } else {
+        $('#movie-input').prop('disabled', true).val(''); // Clear input if not "Other"
+    }
+});
 
-    // Ensure that custom inputs are enabled for submission
-    $('form').on('submit', function() {
-        if ($('#game-dropdown').val() === 'other') {
-            $('#game-input').prop('disabled', false);
-        }
-        if ($('#movie-dropdown').val() === 'other') {
-            $('#movie-input').prop('disabled', false);
-        }
-    });
+// Enable custom game input if "Other" is selected
+$('#game-dropdown').change(function() {
+    var selectedGame = $(this).val();
+    if (selectedGame === 'other') {
+        $('#game-input').prop('disabled', false);
+    } else {
+        $('#game-input').prop('disabled', true).val(''); // Clear input if not "Other"
+    }
+});
+
+// Ensure all custom inputs are enabled before submission
+$('form').on('submit', function() {
+    if ($('#movie-dropdown').val() === 'other') {
+        $('#movie-input').prop('disabled', false);
+    }
+    if ($('#game-dropdown').val() === 'other') {
+        $('#game-input').prop('disabled', false);
+    }
+});
 </script>
+<a href="{{ url_for('index') }}" style="display: inline-block; padding: 10px 20px; margin: 10px 0; font-size: 16px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 5px; border: none; text-align: center; cursor: pointer;">
+    Home
+</a>
 </body>
 </html>
