@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Movie & Game Reviews</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles3.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
 <body>
@@ -19,12 +20,16 @@
         <a href="{{ url_for('add_review') }}">Add Reviews</a>
         <a href="{{ url_for('get_reviews') }}">View Reviews</a>
         <a href="{{ url_for('logout') }}">Logout</a>
+<a href="{{ url_for('about') }}">About</a>
+<a href="{{ url_for('contact') }}">Contact Us</a>
+ 
       {% else %}
         <a href="{{ url_for('login') }}">Login</a>
         <a href="{{ url_for('register') }}">Register</a>
 <a href="{{ url_for('get_reviews') }}">View Reviews</a>
 <a href="{{ url_for('about') }}">About</a>
 <a href="{{ url_for('contact') }}">Contact Us</a>
+
 
 
 
@@ -117,17 +122,16 @@
     </div>
   </footer>
 <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js').then((registration) => {
-                console.log('Service Worker registered with scope:', registration.scope);
-            }).catch((error) => {
-                console.log('Service Worker registration failed:', error);
-            });
-        });
-    }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(function(registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(function(error) {
+        console.log('Service Worker registration failed:', error);
+      });
+  }
 </script>
-
-
-</body>
+</script>
+	</body>
 </html>
